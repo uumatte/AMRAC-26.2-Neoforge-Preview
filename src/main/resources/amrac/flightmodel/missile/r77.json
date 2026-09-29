@@ -1,0 +1,87 @@
+{
+  "id": "R77",
+  "mass": 175,
+  "referenceArea": 0.0314,
+  "length": 3.6,
+  "motor": {
+    "thrustCurve": [
+      [0, 70680.79546], [2.65, 70680.79546], [2.85, 0], [199.65, 0]
+    ]
+  },
+  "aerodynamics": {
+    "dragCoefficientCurve": [
+      [0, 1.239], [0.6, 1.29087], [0.8, 1.46949], [0.9, 1.90171], [0.95, 2.53559], [1.05, 3.11187],
+      [1.2, 2.99662], [1.5, 2.42034], [2, 2.01696], [2.5, 1.81527], [3, 1.7], [3.5, 1.65968],
+      [4, 1.63661], [5, 1.61933]
+    ],
+    "normalForceCoefficientCurve": [
+      [0, 0], [2, 2.125], [5, 5.375], [10, 11.25], [15, 17.5], [20, 24], [25, 30], [30, 33.75],
+      [40, 36.25]
+    ],
+    "controlAuthorityCurve": [
+      [0.0, 0.35], [0.5, 0.55], [0.8, 0.8], [1.0, 0.95], [1.2, 1.0], [2.0, 1.0], [2.8, 0.96],
+      [3.5, 0.9], [4.5, 0.82]
+    ]
+  },
+  "limits": {
+    "maxG": 35,
+    "maxAoA": 25,
+    "maxGRate": 150
+  },
+  "launch": {
+    "maxRange": 17904,
+    "minRange": 24,
+    "cooldownTicks": 30,
+    "warmupSeconds": 3.0,
+    "carried": 4,
+    "rearmTicks": 60
+  },
+  "seeker": {
+    "gimbalDegrees": 31,
+    "navigationConstant": 3.9,
+    "maxLeadTicks": 68,
+    "activeHoming": true,
+    "type": "ARH",
+    "fovDegrees": 6,
+    "activationRange": 12000,
+    "velocityGate": 15,
+    "velocityGateLookDownOnly": false,
+    "chaffSusceptibility": 0.45,
+    "extrapolateOnLoss": false,
+    "extrapolateAfterDecoy": false,
+    "twoWayDatalink": false,
+    "datalinkUpdateSeconds": 1.5,
+    "scanRateDegreesPerSecond": 125,
+    "reacquireSeconds": 0.8,
+    "confirmSeconds": 0.3,
+    "gimbalMemorySeconds": 0.25,
+    "gimbalConfirmSeconds": 0.1,
+    "inertialDriftMetresPerSecond": 3.5,
+    "burnThroughRange": 3000
+  },
+  "loft": {
+    "angleDegrees": 3,
+    "fullRange": 2690,
+    "minRange": 900,
+    "ceiling": 16000
+  },
+  "warhead": {
+    "explosionPower": 3,
+    "proximityFuseRadius": 10,
+    "armingDistance": 24
+  },
+  "carriage": {
+    "dragArea": 0.03
+  },
+  "lifetimeTicks": 401,
+  "inducedDrag": {
+    "factor": 1.0,
+    "speedLossPerG2": 0,
+    "speedLossCap": 0.05
+  },
+  "referenceShot": {
+    "altitude": 8000,
+    "launchSpeed": 500,
+    "targetSpeed": 500
+  }
+}

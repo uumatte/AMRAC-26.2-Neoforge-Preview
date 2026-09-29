@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=north,core=true": {
+      "model": "amrac:block/screen_panel"
+    },
+    "facing=east,core=true": {
+      "model": "amrac:block/screen_panel",
+      "y": 90
+    },
+    "facing=south,core=true": {
+      "model": "amrac:block/screen_panel",
+      "y": 180
+    },
+    "facing=west,core=true": {
+      "model": "amrac:block/screen_panel",
+      "y": 270
+    },
+    "facing=up,core=true": {
+      "model": "amrac:block/screen_panel",
+      "x": 270
+    },
+    "facing=down,core=true": {
+      "model": "amrac:block/screen_panel",
+      "x": 90
+    },
+    "facing=north,core=false": {
+      "model": "amrac:block/screen_panel"
+    },
+    "facing=east,core=false": {
+      "model": "amrac:block/screen_panel",
+      "y": 90
+    },
+    "facing=south,core=false": {
+      "model": "amrac:block/screen_panel",
+      "y": 180
+    },
+    "facing=west,core=false": {
+      "model": "amrac:block/screen_panel",
+      "y": 270
+    },
+    "facing=up,core=false": {
+      "model": "amrac:block/screen_panel",
+      "x": 270
+    },
+    "facing=down,core=false": {
+      "model": "amrac:block/screen_panel",
+      "x": 90
+    }
+  }
+}

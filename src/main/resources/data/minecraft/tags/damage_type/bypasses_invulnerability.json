@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "amrac:plane_crash_death",
+        "amrac:plane_shot_down",
+        "amrac:plane_midair_collision"
+    ]
+}

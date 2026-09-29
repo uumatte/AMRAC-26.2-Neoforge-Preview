@@ -1,0 +1,64 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version "${moddev_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    withSourcesJar()
+}
+
+neoForge {
+    version = project.neoforge_version
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            // Its own directory, so the client and server runs don't share
+            // worlds or config.
+            gameDirectory = project.file('run-server')
+        }
+    }
+
+    mods {
+        amrac {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+processResources {
+    def expansions = [
+        version          : project.version,
+        neoforge_version : project.neoforge_version,
+        minecraft_version: project.minecraft_version,
+    ]
+    inputs.properties expansions
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand expansions
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 25
+    it.options.compilerArgs.addAll(['-Xmaxerrs', '10000'])
+}
+
+tasks.matching { it.name == 'runServer' }.configureEach {
+    standardInput = System.in
+    if (project.hasProperty('aidebug')) {
+        systemProperty 'amrac.aidebug', 'true'
+    }
+}

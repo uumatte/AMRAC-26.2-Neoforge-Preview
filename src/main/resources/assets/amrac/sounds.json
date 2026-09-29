@@ -1,0 +1,114 @@
+{
+    "plane_loop": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.plane_loop",
+        "sounds": [
+            "amrac:engine_loop"
+        ]
+    },
+    "plane_airflow": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.plane_airflow",
+        "sounds": [
+            "amrac:airflow_loop"
+        ]
+    },
+    "plane_afterburner": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.plane_afterburner",
+        "sounds": [
+            "amrac:afterburner_loop"
+        ]
+    },
+    "afterburner_light": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.afterburner_light",
+        "sounds": [
+            "amrac:afterburner_light"
+        ]
+    },
+    "afterburner_cut": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.afterburner_cut",
+        "sounds": [
+            "amrac:afterburner_cut"
+        ]
+    },
+    "jet_engine_loop": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.jet_engine_loop",
+        "sounds": [
+            "amrac:engine_loop"
+        ]
+    },
+    "sonic_boom": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.sonic_boom",
+        "sounds": [
+            {
+                "name": "amrac:sonic_boom",
+                "weight": 3
+            },
+            {
+                "name": "amrac:sonic_boom_double",
+                "weight": 2
+            }
+        ]
+    },
+    "supersonic_rumble": {
+        "category": "neutral",
+        "subtitle": "amrac.subtitle.supersonic_rumble",
+        "sounds": [
+            "amrac:supersonic_rumble"
+        ]
+    },
+    "missile_launch": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.missile_launch",
+        "sounds": [
+            "amrac:missile_launch"
+        ]
+    },
+    "missile_release": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.missile_release",
+        "sounds": [
+            "amrac:missile_release"
+        ]
+    },
+    "missile_lock": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.missile_lock",
+        "sounds": [
+            "amrac:missile_lock"
+        ]
+    },
+    "missile_launch_cockpit": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.missile_launch_cockpit",
+        "sounds": [
+            "amrac:missile_launch"
+        ]
+    },
+    "rwr_warning": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.rwr_warning",
+        "sounds": [
+            "amrac:rwr_warning"
+        ]
+    },
+    "boundary_warning": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.boundary_warning",
+        "sounds": [
+            "amrac:rwr_warning"
+        ]
+    },
+    "gun_fire": {
+        "category": "player",
+        "subtitle": "amrac.subtitle.gun_fire",
+        "sounds": [
+            "amrac:gun_fire"
+        ]
+    }
+}

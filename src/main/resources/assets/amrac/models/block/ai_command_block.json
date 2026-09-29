@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "amrac:block/ai_command_block_side",
+    "north": "amrac:block/ai_command_block_front",
+    "south": "amrac:block/ai_command_block_back",
+    "east": "amrac:block/ai_command_block_side",
+    "west": "amrac:block/ai_command_block_side",
+    "up": "amrac:block/ai_command_block_top",
+    "down": "amrac:block/ai_command_block_bottom"
+  }
+}

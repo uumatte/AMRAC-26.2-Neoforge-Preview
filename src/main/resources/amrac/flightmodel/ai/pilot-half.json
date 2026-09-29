@@ -1,0 +1,95 @@
+{
+  "ranks": {
+    "TRAINEE": {
+      "cruiseAltitude": 1000,
+      "attacks": false,
+      "afterburner": false,
+      "engagementRange": 0,
+      "egressAfterLaunch": false,
+      "evades": false,
+      "notchErrorDegrees": 10,
+      "airframes": ["f4j", "mig21"]
+    },
+    "ELEMENTARY": {
+      "cruiseAltitude": 1500,
+      "attacks": true,
+      "afterburner": true,
+      "engagementRange": 3000,
+      "egressAfterLaunch": false,
+      "evades": false,
+      "notchErrorDegrees": 10,
+      "airframes": ["f4j", "mig21", "mig23"]
+    },
+    "ADVANCED": {
+      "cruiseAltitude": 2250,
+      "attacks": true,
+      "afterburner": true,
+      "engagementRange": 7000,
+      "egressAfterLaunch": true,
+      "evades": true,
+      "notchErrorDegrees": 7.5,
+      "airframes": ["f16", "mig29", "j8ii"]
+    },
+    "VETERAN": {
+      "cruiseAltitude": 2750,
+      "attacks": true,
+      "afterburner": true,
+      "engagementRange": 11000,
+      "egressAfterLaunch": true,
+      "evades": true,
+      "notchErrorDegrees": 3,
+      "airframes": ["f15", "f15e", "su27", "su30", "rafale", "f18"]
+    },
+    "ACE": {
+      "cruiseAltitude": 3500,
+      "attacks": true,
+      "afterburner": true,
+      "engagementRange": 16000,
+      "egressAfterLaunch": true,
+      "evades": true,
+      "notchErrorDegrees": 1,
+      "airframes": ["j10c", "typhoon"]
+    }
+  },
+  "combat": {
+    "launchIntervalTicks": 1200,
+    "gunRange": 640,
+    "gunTrackingCosine": 0.985,
+    "missileWarningReach": 512,
+    "lastDitchSeconds": 1.0
+  },
+  "navigation": {
+    "courseGoalDistance": 6000,
+    "patrolRadius": 5000,
+    "patrolLookahead": 1000,
+    "patrolCapture": 12000
+  },
+  "altitude": {
+    "departureAltitude": 1000,
+    "minimumAltitude": 1000,
+    "fuelStarvedCrashAltitude": 600
+  },
+  "border": {
+    "warningDistance": 4000,
+    "lookaheadDistance": 4000,
+    "inwardGoalDistance": 8000,
+    "turnBackSpeed": 250
+  },
+  "handling": {
+    "maxBankDegrees": 60,
+    "hardTurnLoad": 10,
+    "hardTurnPull": 1.0,
+    "hardTurnErrorDegrees": 10,
+    "turnBackLoadFraction": 0.9,
+    "glideBankDegrees": 40,
+    "maxClimbDegrees": 30,
+    "cruiseSpeed": 250,
+    "rotateSpeed": 80,
+    "overspeedGuardMargin": 40
+  },
+  "area": {
+    "enabled": false,
+    "corner1": [-12500, -12500],
+    "corner2": [12500, 12500]
+  }
+}

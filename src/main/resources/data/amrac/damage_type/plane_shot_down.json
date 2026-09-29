@@ -1,0 +1,5 @@
+{
+    "message_id": "plane_shot_down",
+    "scaling": "when_caused_by_living_non_player",
+    "exhaustion": 0.1
+}

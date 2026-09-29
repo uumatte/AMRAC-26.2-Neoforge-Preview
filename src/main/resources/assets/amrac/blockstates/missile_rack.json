@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,part=left": {
+      "model": "amrac:block/missile_rack_left"
+    },
+    "facing=north,part=mid_left": {
+      "model": "amrac:block/missile_rack_mid"
+    },
+    "facing=north,part=mid_right": {
+      "model": "amrac:block/missile_rack_mid"
+    },
+    "facing=north,part=right": {
+      "model": "amrac:block/missile_rack_right"
+    },
+    "facing=east,part=left": {
+      "model": "amrac:block/missile_rack_left",
+      "y": 90
+    },
+    "facing=east,part=mid_left": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 90
+    },
+    "facing=east,part=mid_right": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 90
+    },
+    "facing=east,part=right": {
+      "model": "amrac:block/missile_rack_right",
+      "y": 90
+    },
+    "facing=south,part=left": {
+      "model": "amrac:block/missile_rack_left",
+      "y": 180
+    },
+    "facing=south,part=mid_left": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 180
+    },
+    "facing=south,part=mid_right": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 180
+    },
+    "facing=south,part=right": {
+      "model": "amrac:block/missile_rack_right",
+      "y": 180
+    },
+    "facing=west,part=left": {
+      "model": "amrac:block/missile_rack_left",
+      "y": 270
+    },
+    "facing=west,part=mid_left": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 270
+    },
+    "facing=west,part=mid_right": {
+      "model": "amrac:block/missile_rack_mid",
+      "y": 270
+    },
+    "facing=west,part=right": {
+      "model": "amrac:block/missile_rack_right",
+      "y": 270
+    }
+  }
+}

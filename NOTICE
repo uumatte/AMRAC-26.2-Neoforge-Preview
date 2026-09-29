@@ -1,0 +1,28 @@
+AMRAC
+Copyright (C) 2026 nonamenov6638, EmanonTheBeauty, uumatter and AntsHsu
+
+SCOPE
+
+This license covers the source code only: the Java source files under
+src/main/java, and the Gradle build scripts (build.gradle, settings.gradle,
+gradle.properties).
+
+All other files in this repository, including everything under
+src/main/resources (textures, 3D models, sounds, icons, language files and
+data files), are NOT covered by this license. They are All Rights Reserved
+and may not be copied, modified or redistributed outside this mod without
+permission from the authors.
+
+The Gradle wrapper (gradlew, gradlew.bat and gradle/wrapper/) is part of
+Gradle and is licensed under the Apache License 2.0.
+
+The source code is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, version 3 only. The GNU Lesser General Public
+License incorporates the terms of the GNU General Public License version 3,
+which is provided in the file COPYING.
+
+The source code is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+in the file COPYING.LESSER for more details.

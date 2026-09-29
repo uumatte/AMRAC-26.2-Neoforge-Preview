@@ -1,0 +1,89 @@
+{
+  "id": "METEOR",
+  "mass": 190,
+  "referenceArea": 0.0249,
+  "length": 3.65,
+  "motor": {
+    "thrustCurve": [
+      [0, 45244.43736], [5.25, 45244.43736], [5.45, 5500], [38.65, 5500],
+      [38.85, 0], [199.65, 0]
+    ]
+  },
+  "aerodynamics": {
+    "dragCoefficientCurve": [
+      [0, 1.22163], [0.6, 1.26304], [0.8, 1.38734], [0.9, 1.73931], [0.95, 2.42259],
+      [1.05, 2.94025], [1.2, 2.77459], [1.5, 2.12235], [2, 1.72893], [2.5, 1.53226], [3, 1.42872],
+      [3.5, 1.3666], [4, 1.34587], [5, 1.32517], [6, 1.31469]
+    ],
+    "normalForceCoefficientCurve": [
+      [0, 0], [2, 2.5], [5, 6.45], [10, 13.5], [15, 21], [20, 28.875], [25, 36], [30, 40.5],
+      [40, 43.625]
+    ],
+    "controlAuthorityCurve": [
+      [0.0, 0.42], [0.5, 0.64], [0.8, 0.88], [1.0, 0.99], [1.2, 1.0], [2.0, 1.0], [2.8, 0.99],
+      [3.5, 0.96], [4.5, 0.92], [5.5, 0.88]
+    ]
+  },
+  "limits": {
+    "maxG": 40,
+    "maxAoA": 27,
+    "maxGRate": 150
+  },
+  "launch": {
+    "maxRange": 41823,
+    "minRange": 24,
+    "cooldownTicks": 30,
+    "warmupSeconds": 2.0,
+    "carried": 4,
+    "rearmTicks": 60
+  },
+  "seeker": {
+    "gimbalDegrees": 32,
+    "navigationConstant": 3.3,
+    "maxLeadTicks": 92,
+    "activeHoming": true,
+    "type": "ARH",
+    "fovDegrees": 6,
+    "activationRange": 18000,
+    "velocityGate": 10,
+    "velocityGateLookDownOnly": false,
+    "chaffSusceptibility": 0.2,
+    "extrapolateOnLoss": true,
+    "extrapolateAfterDecoy": false,
+    "twoWayDatalink": true,
+    "datalinkUpdateSeconds": 0.5,
+    "datalinkErrorDegrees": 0.3,
+    "scanRateDegreesPerSecond": 1200,
+    "reacquireSeconds": 0.5,
+    "confirmSeconds": 0.2,
+    "gimbalMemorySeconds": 0.25,
+    "gimbalConfirmSeconds": 0.1,
+    "inertialDriftMetresPerSecond": 0.8,
+    "burnThroughRange": 1500
+  },
+  "loft": {
+    "angleDegrees": 4,
+    "fullRange": 16730,
+    "minRange": 5580,
+    "ceiling": 22000
+  },
+  "warhead": {
+    "explosionPower": 3,
+    "proximityFuseRadius": 11,
+    "armingDistance": 24
+  },
+  "carriage": {
+    "dragArea": 0.026
+  },
+  "lifetimeTicks": 1300,
+  "inducedDrag": {
+    "factor": 1.0,
+    "speedLossPerG2": 0,
+    "speedLossCap": 0.05
+  },
+  "referenceShot": {
+    "altitude": 8000,
+    "launchSpeed": 500,
+    "targetSpeed": 500
+  }
+}

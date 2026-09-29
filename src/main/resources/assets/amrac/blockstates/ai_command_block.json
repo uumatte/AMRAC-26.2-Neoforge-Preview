@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "amrac:block/ai_command_block" },
+    "facing=east":  { "model": "amrac:block/ai_command_block", "y": 90 },
+    "facing=south": { "model": "amrac:block/ai_command_block", "y": 180 },
+    "facing=west":  { "model": "amrac:block/ai_command_block", "y": 270 }
+  }
+}

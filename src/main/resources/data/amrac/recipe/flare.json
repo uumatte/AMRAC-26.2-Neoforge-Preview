@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:gunpowder",
+    "minecraft:glowstone_dust",
+    "minecraft:paper"
+  ],
+  "result": {
+    "id": "amrac:flare",
+    "count": 4
+  }
+}

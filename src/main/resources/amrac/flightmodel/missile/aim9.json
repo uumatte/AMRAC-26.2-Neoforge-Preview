@@ -1,0 +1,76 @@
+{
+  "id": "AIM9",
+  "mass": 85,
+  "referenceArea": 0.0127,
+  "length": 2.85,
+  "motor": {
+    "thrustCurve": [
+      [0, 27303.28086], [1.8, 27303.28086], [1.95, 0], [199.7, 0]
+    ]
+  },
+  "aerodynamics": {
+    "dragCoefficientCurve": [
+      [0, 0.49751], [0.6, 0.51281], [0.8, 0.56449], [0.9, 0.68886], [0.95, 0.89935],
+      [1.05, 1.07156], [1.2, 0.99502], [1.5, 0.78454], [2, 0.6506], [2.5, 0.59319], [3, 0.56639],
+      [3.5, 0.5511], [4, 0.54344]
+    ],
+    "normalForceCoefficientCurve": [
+      [0, 0], [2, 2.875], [5, 7.25], [10, 15.25], [15, 23.5], [20, 31.5], [25, 38.5], [30, 44.25],
+      [40, 51.25], [50, 53.25]
+    ],
+    "controlAuthorityCurve": [
+      [0.0, 0.55], [0.5, 0.75], [0.8, 0.92], [1.0, 1.0], [1.2, 1.0], [2.0, 0.98], [2.8, 0.9],
+      [3.5, 0.8]
+    ]
+  },
+  "limits": {
+    "maxG": 50,
+    "maxAoA": 35,
+    "maxGRate": 250
+  },
+  "launch": {
+    "maxRange": 3000,
+    "minRange": 24,
+    "cooldownTicks": 30,
+    "warmupSeconds": 1.5,
+    "carried": 4,
+    "rearmTicks": 60
+  },
+  "seeker": {
+    "gimbalDegrees": 140,
+    "navigationConstant": 4.2,
+    "maxLeadTicks": 40,
+    "activeHoming": true,
+    "type": "IR",
+    "extrapolateOnLoss": false,
+    "twoWayDatalink": false,
+    "datalinkUpdateSeconds": 0,
+    "reacquireSeconds": 0.25,
+    "confirmSeconds": 0.1,
+    "burnThroughRange": 3000,
+    "flareSusceptibility": 0.18,
+    "heatSourceCoefficient": 0.7
+  },
+  "loft": {
+    "angleDegrees": 0
+  },
+  "warhead": {
+    "explosionPower": 3,
+    "proximityFuseRadius": 8,
+    "armingDistance": 24
+  },
+  "carriage": {
+    "dragArea": 0.01
+  },
+  "lifetimeTicks": 220,
+  "inducedDrag": {
+    "factor": 1.0,
+    "speedLossPerG2": 0,
+    "speedLossCap": 0.05
+  },
+  "referenceShot": {
+    "altitude": 8000,
+    "launchSpeed": 500,
+    "targetSpeed": 500
+  }
+}

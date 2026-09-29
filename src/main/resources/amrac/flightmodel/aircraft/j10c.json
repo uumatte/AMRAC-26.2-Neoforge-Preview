@@ -1,0 +1,154 @@
+{
+  "id": "j10c",
+  "mass": 11700,
+  "wingArea": 39,
+  "engine": {
+    "thrustAltitudeCurve": [
+      [0, 89200.0], [1000, 82697.0], [2000, 76533.0], [3000, 70699.0], [4000, 65185.0],
+      [5000, 59975.0], [6000, 55070.0], [7000, 50453.0], [8000, 46117.0], [9000, 42049.0],
+      [10000, 38236.0], [11000, 34609.0], [12000, 30687.0], [14000, 24025.0], [16000, 18807.0],
+      [18000, 14719.0], [20000, 11528.0], [24000, 7001.0]
+    ],
+    "afterburnerThrustMultiplier": 1.592,
+    "thrustMachCurve": [
+      [0.0, 1.0], [0.3, 0.97], [0.6, 0.99], [0.9, 1.05], [1.0, 1.1], [1.2, 1.27], [1.4, 1.43],
+      [1.6, 1.56], [1.8, 1.65], [2.0, 1.71], [2.2, 1.75], [2.5, 1.79], [3.0, 1.83]
+    ]
+  },
+  "aerodynamics": {
+    "liftCoefficientCurve": [
+      [-90.0, 0.0], [-90.0, -0.0], [-70.0, -0.6624], [-55.0, -0.9944], [-48.2, -1.2812],
+      [-41.9, -1.4355], [-36.8, -1.568], [-33.0, -1.677], [-29.2, -1.5847], [-25.4, -1.4422],
+      [-20.3, -1.1957], [-15.2, -0.9308], [-10.2, -0.654], [-7.7, -0.5031], [-5.1, -0.3522],
+      [-3.3, -0.2498], [-1.7, -0.1559], [0.0, 0.0795], [1.7, 0.1999], [3.3, 0.3203], [5.1, 0.4515],
+      [7.7, 0.645], [10.2, 0.8385], [15.2, 1.1933], [20.3, 1.5329], [25.4, 1.849], [29.2, 2.0317],
+      [33.0, 2.15], [36.8, 2.0103], [41.9, 1.8404], [48.2, 1.6426], [55.0, 1.2749], [70.0, 0.8492],
+      [90.0, 0.0]
+    ],
+    "dragCoefficientCurve": [
+      [-90.0, 2.12964], [-90.0, 2.12964], [-70.0, 1.58327], [-55.0, 1.26636], [-48.2, 1.15474],
+      [-41.9, 1.0734], [-36.8, 1.0273], [-33.0, 0.62168], [-29.2, 0.55702], [-25.4, 0.46438],
+      [-20.3, 0.32472], [-15.2, 0.20373], [-10.2, 0.10951], [-7.7, 0.072], [-5.1, 0.04428],
+      [-3.3, 0.03104], [-1.7, 0.02286], [0.0, 0.019], [1.7, 0.02622], [3.3, 0.03968],
+      [5.1, 0.06142], [7.7, 0.107], [10.2, 0.16865], [15.2, 0.32348], [20.3, 0.52233],
+      [25.4, 0.75194], [29.2, 0.90422], [33.0, 1.01048], [36.8, 1.0273], [41.9, 1.0734],
+      [48.2, 1.15474], [55.0, 1.26636], [70.0, 1.58327], [90.0, 2.12964]
+    ],
+    "waveDragMachCurve": [
+      [0.0, 0.0], [0.579, 0.0], [0.724, 0.00235], [0.82, 0.00673], [0.888, 0.01299],
+      [0.945, 0.02072], [1.013, 0.02816], [1.1, 0.0309], [1.2, 0.03074], [1.3, 0.02801],
+      [1.4, 0.02535], [1.6, 0.02034], [1.8, 0.01988], [2.0, 0.01946], [2.2, 0.01909],
+      [2.5, 0.01861], [3.0, 0.01794]
+    ],
+    "liftAltitudeMultiplierCurve": [
+      [0, 1.0], [7975.0, 1.0], [8175.0, 0.972], [8375.0, 0.896], [8575.0, 0.784], [8775.0, 0.648],
+      [8975.0, 0.5], [9175.0, 0.352], [9375.0, 0.216], [9575.0, 0.104], [9775.0, 0.028],
+      [9975.0, 0.0], [28000, 0.0]
+    ]
+  },
+  "limits": {
+    "maxPositiveG": 12,
+    "maxNegativeG": -3,
+    "limiterAngleOfAttack": 28,
+    "limiterSoftStartAngleOfAttack": 22,
+    "structuralSpeedLimitCurve": [
+      [0, 395.0], [1000, 395.0], [2000, 415.1], [3000, 439.0], [4000, 479.0], [5000, 526.0],
+      [6000, 538.0], [7000, 549.0], [8000, 574.4], [9000, 607.6], [10000, 607.6], [11000, 599.2],
+      [13000, 590.4], [15000, 590.4], [18000, 590.4], [21000, 591.6]
+    ]
+  },
+  "response": {
+    "maxPitchRate": 105,
+    "maxRollRate": 270,
+    "maxYawRate": 15,
+    "pitchRateResponse": 0.7,
+    "rollRateResponse": 0.75,
+    "yawRateResponse": 0.35,
+    "controlAuthorityReferenceSpeed": 90,
+    "minimumControlAuthority": 0.07,
+    "postStallControlAuthority": 0.4
+  },
+  "stability": {
+    "pitchStability": 0.4,
+    "yawStability": 0.8,
+    "maxPitchStabilityRate": 25,
+    "maxYawStabilityRate": 18
+  },
+  "ground": {
+    "rollingResistance": 0.02,
+    "lateralGrip": 6,
+    "thrustFactor": 0.85
+  },
+  "publishedSpeeds": {
+    "militaryLevelSpeed": 320,
+    "afterburnerLevelSpeed": 377
+  },
+  "radar": {
+    "horizontalScan": 140,
+    "verticalScan": 140,
+    "scanRateHz": 40,
+    "lockRange": 44844,
+    "trackMemorySeconds": 3,
+    "maxContacts": 16,
+    "acquireMargin": 0.94,
+    "velocityGate": 8,
+    "velocityGateLookDownOnly": false
+  },
+  "fuel": {
+    "capacityLitres": 5625,
+    "referenceFuelFraction": 0.5,
+    "throttleThrustCurve": [
+      [0, 0.06], [0.2, 0.17], [0.4, 0.34], [0.6, 0.54], [0.8, 0.77], [1, 1]
+    ],
+    "throttleFlowCurve": [
+      [0, 0.131], [0.2, 0.562], [0.4, 0.863], [0.6, 1.144], [0.8, 1.481], [1, 1.875]
+    ],
+    "afterburnerFlowMultiplier": 4.08
+  },
+  "flaps": {
+    "liftIncrement": 0.35,
+    "dragIncrement": 0.045,
+    "placardSpeed": 130,
+    "travelTicks": 22
+  },
+  "countermeasures": {
+    "capacity": 72,
+    "chaff": 36,
+    "flare": 36
+  },
+  "flightControl": {
+    "fullAuthoritySpeed": 130,
+    "rollTaperOnsetSpeed": 260,
+    "rollHighPressureTaper": 0.25,
+    "pitchAuthorityExponent": 0.55,
+    "rollAuthorityExponent": 0.5,
+    "yawAuthorityExponent": 0.85,
+    "angleOfAttackCaptureSeconds": 0.2,
+    "limitSoftness": 0.2,
+    "storesAsymmetryTrim": 0.75
+  },
+  "inertia": {
+    "rollInertia": 15901,
+    "pitchInertia": 105318,
+    "yawInertia": 129544,
+    "rollControlMoment": 299727.0,
+    "pitchControlMoment": 507909.0,
+    "yawControlMoment": 41359,
+    "rollDamping": 283,
+    "pitchDamping": 799,
+    "yawDamping": 1292,
+    "stationSpanMetres": [-3.6, 3.6, -2.4, 2.4, -1.1, 1.1],
+    "storesArmMetres": 0.55,
+    "fuelRollArmMetres": 1.46,
+    "fuelPitchArmMetres": 1.79
+  },
+  "postStall": {
+    "fadeBandDegrees": 10,
+    "pitchAuthority": 0,
+    "rollAuthority": 0,
+    "yawAuthority": 0,
+    "recoveryMoment": 0,
+    "recoveryPressureFloor": 0.15,
+    "rateCommandFade": 0
+  }
+}
