@@ -275,10 +275,11 @@ public final class AircraftVirtualService {
     private static void announceFuelLoss(MinecraftServer server,
                                          VirtualAircraftState state) {
         String pilot = state.pilotId == null ? null : callsignOf(state.pilotId);
-        server.getPlayerList().broadcastSystemMessage(
-            net.minecraft.network.chat.Component.literal(
-                (pilot == null ? "An aircraft" : pilot)
-                    + " ran out of fuel and was lost"), false);
+        server.getPlayerList().broadcastSystemMessage(pilot == null
+            ? net.minecraft.network.chat.Component.translatable(
+                "amrac.message.fuel_lost_unknown")
+            : net.minecraft.network.chat.Component.translatable(
+                "amrac.message.fuel_lost", pilot), false);
     }
 
     @Nullable

@@ -273,7 +273,9 @@ public final class BvrTraceRecorder {
                                 float gear, float flaps, boolean onGround,
                                 @Nullable String[] loadout,
                                 @Nullable FlightState flight,
-                                @Nullable AiPilotBrain brain, boolean live) {
+                                @Nullable AiPilotBrain brain, boolean live,
+                                int clientSilentTicks, int clientLateTicks,
+                                double positionSlack) {
         }
 
         private record Decoy(int id, CountermeasureService.Kind kind,
@@ -299,7 +301,16 @@ public final class BvrTraceRecorder {
                     live.getThrottle(), live.getAfterburnerSpool(1.0F),
                     live.getGearPosition(), live.getFlapPosition(),
                     live.onGround() || live.isOnWater(), live.getLoadout(),
-                    live.getFlightState(), brain, true));
+                    live.getFlightState(), brain, true,
+                    live.getControllingPassenger()
+                        instanceof net.minecraft.server.level.ServerPlayer
+                        ? (int) live.ticksSinceClientPosition() : -1,
+                    live.getControllingPassenger()
+                        instanceof net.minecraft.server.level.ServerPlayer
+                        ? live.clientStateLateness() : -1,
+                    live.getControllingPassenger()
+                        instanceof net.minecraft.server.level.ServerPlayer
+                        ? live.clientPositionSlack() : -1.0D));
                 continue;
             }
             VirtualAircraftState v = AircraftVirtualService.get(record.id);
@@ -313,7 +324,7 @@ public final class BvrTraceRecorder {
                 PlaneEntity.bodyDirection(v.attitude, 1.0F, 0.0F, 0.0F),
                 v.throttle, v.afterburnerSpool, v.gearPosition, v.flapPosition,
                 v.onGround, v.loadout,
-                v.flightState, brain, false));
+                v.flightState, brain, false, -1, -1, -1.0D));
         }
         return out;
     }
@@ -365,7 +376,8 @@ public final class BvrTraceRecorder {
                 record.team, airframe, record.position, record.velocity,
                 Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, 0, 0.0F, 0.0F, 0.0F, false,
                 live != null ? live.getLoadout() : v != null ? v.loadout : null,
-                null, AiPilotService.flying(record.id), live != null));
+                null, AiPilotService.flying(record.id), live != null, -1, -1,
+                -1.0D));
         }
         return out;
     }
@@ -719,7 +731,18 @@ public final class BvrTraceRecorder {
             .append(",\"afterburnerSpool\":").append(num(a.spool()))
             .append(",\"gear\":").append(num(a.gear()))
             .append(",\"flaps\":").append(num(a.flaps()))
-            .append(",\"onGround\":").append(a.onGround());
+            .append(",\"onGround\":").append(a.onGround())
+            // Player aircraft only: staleness of the server's copy.
+            .append(",\"clientSilentTicks\":")
+            .append(a.clientSilentTicks() < 0 ? "null"
+                : String.valueOf(a.clientSilentTicks()))
+            .append(",\"clientLateTicks\":")
+            .append(a.clientLateTicks() < 0 ? "null"
+                : String.valueOf(a.clientLateTicks()))
+            // Fuse growth; closestMiss on this aircraft is to the grown box.
+            .append(",\"positionSlack\":")
+            .append(a.positionSlack() < 0.0D ? "null"
+                : num(a.positionSlack()));
 
         FlightState flight = a.flight();
         if (flight == null) {

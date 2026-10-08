@@ -24,6 +24,10 @@ public enum ConsoleMode implements StringRepresentable {
         return label;
     }
 
+    public String translationKey() {
+        return "amrac.console.mode." + name;
+    }
+
     public ConsoleMode next() {
         ConsoleMode[] values = values();
         return values[(ordinal() + 1) % values.length];

@@ -277,6 +277,21 @@ public class PlaneEntity extends Entity {
     @Nullable
     private Vec3 clientPositionSeen;
     private long clientPositionSeenAt;
+    // Server side: distance the pilot's client may catch up per tick.
+    private final amrac.network.ClientMoveBudget clientMoveBudget =
+        new amrac.network.ClientMoveBudget();
+    @Nullable
+    private java.util.UUID clientMoveBudgetPilot;
+    // Server side: how late the pilot's flight states arrive.
+    private final amrac.network.ClientSampleClock clientSampleClock =
+        new amrac.network.ClientSampleClock();
+    @Nullable
+    private java.util.UUID clientSampleClockPilot;
+    // Server side: how wrong the missiles' picture of this aircraft has been.
+    private final amrac.network.ClientPositionSlack clientPositionSlack =
+        new amrac.network.ClientPositionSlack();
+    @Nullable
+    private java.util.UUID clientPositionSlackPilot;
     private int hurtFlashTicks;
     public int notMovingTime;
     public int goldenHeartsTimeout = 0;
@@ -1024,10 +1039,66 @@ public class PlaneEntity extends Entity {
         return Math.max(0L, now - clientPositionSeenAt);
     }
 
+    // Silence counts from arrival; a state that arrived late was already
+    // older than that, so its lateness is added on top.
     public Vec3 silentClientOffset() {
         int ticks = amrac.network.PlaneSyncPolicy.extrapolationTicks(
-            ticksSinceClientPosition());
+            ticksSinceClientPosition()) + clientStateLateness();
         return ticks == 0 ? Vec3.ZERO : getDeltaMovement().scale(ticks);
+    }
+
+    public int clientStateLateness() {
+        return !level().isClientSide()
+                && getControllingPassenger() instanceof ServerPlayer pilot
+                && pilot.getUUID().equals(clientSampleClockPilot)
+            ? clientSampleClock.lateness() : 0;
+    }
+
+    // Blocks a missile's fuse box grows by for this aircraft. Idempotent per
+    // tick; zero for anything the server flies.
+    public double clientPositionSlack() {
+        if (level().isClientSide()
+                || !(getControllingPassenger() instanceof ServerPlayer pilot)) {
+            clientPositionSlackPilot = null;
+            return 0.0D;
+        }
+        if (!pilot.getUUID().equals(clientPositionSlackPilot)) {
+            clientPositionSlackPilot = pilot.getUUID();
+            clientPositionSlack.reset();
+        }
+        boolean fresh = ticksSinceClientPosition() == 0L;
+        Vec3 picture = position().add(silentClientOffset());
+        Vec3 motion = getDeltaMovement();
+        return clientPositionSlack.update(level().getGameTime(),
+            picture.x, picture.y, picture.z, motion.x, motion.y, motion.z,
+            fresh);
+    }
+
+    // The rotation packet's client tick. Old clients never send it.
+    public void noteClientTick(ServerPlayer pilot, long clientTick) {
+        if (!pilot.getUUID().equals(clientSampleClockPilot)) {
+            clientSampleClockPilot = pilot.getUUID();
+            clientSampleClock.reset();
+        }
+        clientSampleClock.sample(clientTick, level().getGameTime());
+    }
+
+    // Asked by VehicleMoveAllowanceMixin. Vanilla allows one tick of flight per
+    // server tick, so a burst of moves is refused and the pilot pulled back.
+    public double clientMoveExpectedSqr(double vanillaExpectedSqr) {
+        if (level().isClientSide()
+                || !(getControllingPassenger() instanceof ServerPlayer pilot)) {
+            return vanillaExpectedSqr;
+        }
+        if (!pilot.getUUID().equals(clientMoveBudgetPilot)) {
+            clientMoveBudgetPilot = pilot.getUUID();
+            clientMoveBudget.reset();
+        }
+        Vec3 here = position();
+        return clientMoveBudget.expectedSqr(vanillaExpectedSqr,
+            level().getGameTime(), System.nanoTime(),
+            level().tickRateManager().nanosecondsPerTick(),
+            here.x, here.y, here.z, getDeltaMovement().length());
     }
 
     public amrac.physics.aircraft.FuelProfile getFuelProfile() {
@@ -1461,6 +1532,8 @@ public class PlaneEntity extends Entity {
         if (receivesClientFlightState) {
             onGroundTicks = onGround() ? 5 : onGroundTicks - 1;
             ticksSinceClientPosition();
+            // Every tick, so no arrival's jump goes unmeasured.
+            clientPositionSlack();
         }
         boolean onGroundOrWater = getOnGround() || isOnWater();
         if (!receivesClientFlightState) {
@@ -1523,7 +1596,7 @@ public class PlaneEntity extends Entity {
             setQ_Client(q);
 
             amrac.network.PlaneNetworking.sendRotation(q,
-                getDeltaMovement());
+                getDeltaMovement(), tickCount);
         } else {
             ServerPlayer player = (ServerPlayer) getPlayer();
             if (player != null) {
@@ -2022,14 +2095,16 @@ public class PlaneEntity extends Entity {
         }
         String[] slots = getLoadout();
         double[] distances = new double[pylonCount()];
+        double[] lateral = new double[distances.length];
         double[][] rails = railPositions();
         double scale = getModelScale();
         for (int i = 0; i < distances.length; i++) {
             Vec3 station = machineGuns().worldPoint(rails[i][0] * scale,
                 rails[i][1] * scale, rails[i][2] * scale);
             distances[i] = station.distanceTo(hit);
+            lateral[i] = rails[i][0];
         }
-        int station = MissileLoadout.stationToLoad(slots, distances);
+        int station = MissileLoadout.stationToLoad(slots, distances, lateral);
         if (station < 0) {
             return null;
         }

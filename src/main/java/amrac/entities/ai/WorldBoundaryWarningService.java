@@ -35,8 +35,8 @@ public final class WorldBoundaryWarningService {
                 boolean inside = distance <= WorldBoundaryPolicy.playerWarningDistance();
                 if (inside) {
                     long metres = Math.max(0L, Math.round(distance));
-                    AmracMod.sendOverlay(player, Component.literal(
-                        "Warning: boundary " + metres + " m")
+                    AmracMod.sendOverlay(player, Component.translatable(
+                        "amrac.message.boundary_warning", metres)
                         .withStyle(ChatFormatting.RED), true);
                     INSIDE.add(player.getUUID());
                     PlaneNetworking.sendBoundary(player, distance);

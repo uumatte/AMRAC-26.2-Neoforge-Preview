@@ -80,6 +80,8 @@ public class MissileEntity extends Entity {
     private int restoredAge;
 
     private Vec3 axis = Vec3.ZERO;
+    /** World-space radians/second; carried through virtualisation and saves. */
+    private final double[] angularVelocity = new double[3];
 
     private MissileProfile profile = MissileProfiles.defaultProfile();
 
@@ -394,6 +396,7 @@ public class MissileEntity extends Entity {
         state.ownerName = ownerNameAtLaunch;
         state.seeker = seeker.copy();
         state.lastLoadG = lastLoadG;
+        System.arraycopy(angularVelocity, 0, state.angularVelocity, 0, 3);
         state.movePending = flown;
         VirtualMissileService.adopt(state);
         discard();
@@ -412,6 +415,7 @@ public class MissileEntity extends Entity {
         missile.axis = state.axis;
         missile.travelled = state.travelled;
         missile.lastLoadG = state.lastLoadG;
+        System.arraycopy(state.angularVelocity, 0, missile.angularVelocity, 0, 3);
         missile.guidanceLost = state.guidanceLost;
         missile.ownerUuid = state.ownerId;
         missile.ownerNameAtLaunch = state.ownerName;
@@ -480,22 +484,11 @@ public class MissileEntity extends Entity {
 
     private void steerAxis(@Nullable Vec3 aim, @Nullable Vec3 aimVelocity) {
         Vec3 current = bodyAxis();
-        if (aim == null || aimVelocity == null) {
-            pointAlongAxis();
-            return;
-        }
-        Vec3 toTarget = aim.subtract(position());
-        double[] desired = new double[3];
-        if (!MissilePolicy.steeringDirection(profile, toArray(toTarget),
-            toArray(aimVelocity), getDeltaMovement().length(),
-            getY(), desired)) {
-            pointAlongAxis();
-            return;
-        }
         double[] turned = new double[3];
-        if (MissilePolicy.turnToward(toArray(current), desired,
-            MissilePolicy.maxTurnRadians(profile, getDeltaMovement().length(),
-                getY(), age()), turned)) {
+        if (MissilePolicy.advanceAxis(profile, toArray(getDeltaMovement()),
+            toArray(current), aim == null ? null : toArray(aim.subtract(position())),
+            aimVelocity == null ? null : toArray(aimVelocity), getY(), age(),
+            angularVelocity, turned)) {
             axis = new Vec3(turned[0], turned[1], turned[2]);
         }
         pointAlongAxis();
@@ -509,7 +502,7 @@ public class MissileEntity extends Entity {
     private Vec3 alignVelocity(Vec3 velocity, @Nullable double[] command) {
         double[] aligned = new double[3];
         double[] load = {lastLoadG};
-        if (!MissilePolicy.alignAndCharge(profile, toArray(velocity),
+        if (!MissilePolicy.alignFlightVelocity(profile, toArray(velocity),
             toArray(bodyAxis()), command, getY(), load, age(), aligned)) {
             return velocity;
         }
@@ -715,6 +708,15 @@ public class MissileEntity extends Entity {
         output.putInt("SourcePlane", sourcePlaneId);
         output.putInt("Target", entityData.get(TARGET_ID));
         output.putDouble("Travelled", travelled);
+        output.putInt("FlightAge", age());
+        output.putDouble("LastLoadG", lastLoadG);
+        Vec3 savedAxis = bodyAxis();
+        output.putDouble("AxisX", savedAxis.x);
+        output.putDouble("AxisY", savedAxis.y);
+        output.putDouble("AxisZ", savedAxis.z);
+        output.putDouble("AngularVelocityX", angularVelocity[0]);
+        output.putDouble("AngularVelocityY", angularVelocity[1]);
+        output.putDouble("AngularVelocityZ", angularVelocity[2]);
         output.putString("Profile", profile.id);
         if (ownerUuid != null) {
             output.store("Owner", UUIDUtil.CODEC, ownerUuid);
@@ -735,6 +737,15 @@ public class MissileEntity extends Entity {
         sourcePlaneId = input.getIntOr("SourcePlane", -1);
         entityData.set(TARGET_ID, input.getIntOr("Target", 0));
         travelled = input.getDoubleOr("Travelled", 0.0D);
+        restoredAge = Math.max(0, input.getIntOr("FlightAge", 0));
+        lastLoadG = finiteSaved(input.getDoubleOr("LastLoadG", 0.0D));
+        Vec3 savedAxis = new Vec3(input.getDoubleOr("AxisX", 0.0D),
+            input.getDoubleOr("AxisY", 0.0D), input.getDoubleOr("AxisZ", 0.0D));
+        axis = isFinite(savedAxis) && savedAxis.lengthSqr() > 1.0E-9D
+            ? savedAxis.normalize() : Vec3.ZERO;
+        angularVelocity[0] = finiteSaved(input.getDoubleOr("AngularVelocityX", 0.0D));
+        angularVelocity[1] = finiteSaved(input.getDoubleOr("AngularVelocityY", 0.0D));
+        angularVelocity[2] = finiteSaved(input.getDoubleOr("AngularVelocityZ", 0.0D));
         profile = MissileProfiles.byId(input.getStringOr("Profile", "AIM7"));
         ownerUuid = input.read("Owner", UUIDUtil.CODEC).orElse(null);
         String ownerName = input.getStringOr("OwnerName", "");
@@ -756,4 +767,8 @@ public class MissileEntity extends Entity {
         return Double.isFinite(v.x) && Double.isFinite(v.y) &&
             Double.isFinite(v.z) && Double.isFinite(v.lengthSqr());
     }
+
+    private static double finiteSaved(double value) {
+        return Double.isFinite(value) ? value : 0.0D;
+}
 }

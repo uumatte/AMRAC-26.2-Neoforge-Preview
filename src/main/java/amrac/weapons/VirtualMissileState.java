@@ -16,6 +16,8 @@ public final class VirtualMissileState {
     public Vec3 position;
     public Vec3 velocity;
     public Vec3 axis;
+    /** World-space angular velocity in radians/second, including across handovers. */
+    public final double[] angularVelocity = new double[3];
 
     @Nullable
     public final UUID targetId;

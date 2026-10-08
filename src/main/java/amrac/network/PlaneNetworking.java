@@ -99,7 +99,7 @@ public final class PlaneNetworking {
 
     @FunctionalInterface
     public interface RotationSender {
-        void send(Quaternionf attitude, Vec3 motion);
+        void send(Quaternionf attitude, Vec3 motion, int clientTick);
     }
 
     @FunctionalInterface
@@ -212,9 +212,10 @@ public final class PlaneNetworking {
         controlSender = sender;
     }
 
-    public static void sendRotation(Quaternionf attitude, Vec3 motion) {
+    public static void sendRotation(Quaternionf attitude, Vec3 motion,
+                                    int clientTick) {
         if (rotationSender != null) {
-            rotationSender.send(attitude, motion);
+            rotationSender.send(attitude, motion, clientTick);
         }
     }
 
@@ -944,7 +945,7 @@ public final class PlaneNetworking {
     }
 
     public static void writeRotation(FriendlyByteBuf buf, Quaternionf attitude,
-                                     Vec3 motion) {
+                                     Vec3 motion, int clientTick) {
         buf.writeFloat(attitude.x());
         buf.writeFloat(attitude.y());
         buf.writeFloat(attitude.z());
@@ -952,6 +953,8 @@ public final class PlaneNetworking {
         buf.writeDouble(motion.x());
         buf.writeDouble(motion.y());
         buf.writeDouble(motion.z());
+        // Last, so older servers read the rest and ignore it.
+        buf.writeInt(clientTick);
     }
 
     public static void writeControls(FriendlyByteBuf buf, int throttle,
@@ -1191,10 +1194,16 @@ public final class PlaneNetworking {
                 double mx = buf.readDouble();
                 double my = buf.readDouble();
                 double mz = buf.readDouble();
+                // Missing from clients that predate it.
+                boolean stamped = buf.readableBytes() >= Integer.BYTES;
+                int clientTick = stamped ? buf.readInt() : 0;
                 server.execute(() -> {
                     if (!(player.getVehicle() instanceof PlaneEntity plane) ||
                         plane.getControllingPassenger() != player) {
                         return;
+                    }
+                    if (stamped) {
+                        plane.noteClientTick(player, clientTick);
                     }
                     Quaternionf attitude = new Quaternionf(qx, qy, qz, qw);
                     Vec3 motion = new Vec3(mx, my, mz);

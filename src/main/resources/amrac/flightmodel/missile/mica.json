@@ -28,6 +28,13 @@
     "maxAoA": 35,
     "maxGRate": 200
   },
+  "inertia": {
+    "enabled": true,
+    "turnInertia": 80,
+    "controlMoment": 4000,
+    "damping": 700,
+    "referenceDynamicPressure": 50000
+  },
   "launch": {
     "maxRange": 20295,
     "minRange": 24,

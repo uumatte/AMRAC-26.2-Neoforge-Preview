@@ -24,6 +24,17 @@ public enum AiPilotIdleReason {
         return label;
     }
 
+    public net.minecraft.network.chat.Component displayName() {
+        if (this == NONE) {
+            return net.minecraft.network.chat.Component.empty();
+        }
+        String key = "amrac.ai_idle." + name().toLowerCase(java.util.Locale.ROOT);
+        return this == NO_AIRCRAFT
+            ? net.minecraft.network.chat.Component.translatable(key,
+                (int) AiPilotBrain.BOARDING_SEARCH_RADIUS)
+            : net.minecraft.network.chat.Component.translatable(key);
+    }
+
     public boolean shown() {
         return this != NONE;
     }

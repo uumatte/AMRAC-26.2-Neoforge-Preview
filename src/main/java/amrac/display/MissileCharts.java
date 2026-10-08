@@ -57,8 +57,8 @@ public final class MissileCharts {
                 step);
             seconds += step;
         }
-        return new ChartData(ChartKind.SPEED_VS_TIME.label(),
-            ChartKind.SPEED_VS_TIME.xLabel(), ChartKind.SPEED_VS_TIME.yLabel(),
+        return new ChartData(ChartKind.SPEED_VS_TIME.titleText(),
+            ChartKind.SPEED_VS_TIME.xLabelText(), ChartKind.SPEED_VS_TIME.yLabelText(),
             trim(xs, written), trim(ys, written), "");
     }
 
@@ -73,10 +73,11 @@ public final class MissileCharts {
             xs[i] = speed;
             ys[i] = model.availableLoadG(speed, worldY, atmosphere);
         }
-        return new ChartData(ChartKind.AVAILABLE_G_VS_SPEED.label(),
-            ChartKind.AVAILABLE_G_VS_SPEED.xLabel(),
-            ChartKind.AVAILABLE_G_VS_SPEED.yLabel(), xs, ys,
-            model.profile().id() + " at " + Math.round(worldY) + " m");
+        return new ChartData(ChartKind.AVAILABLE_G_VS_SPEED.titleText(),
+            ChartKind.AVAILABLE_G_VS_SPEED.xLabelText(),
+            ChartKind.AVAILABLE_G_VS_SPEED.yLabelText(), xs, ys,
+            SyncedText.of("amrac.chart.note.altitude", model.profile().id(),
+                Math.round(worldY)));
     }
 
     public static ChartData nezVsSpeed(MissileFlightModel model,
@@ -93,10 +94,10 @@ public final class MissileCharts {
             ys[i] = MissilePerformance.measureAt(model, atmosphere, altitude,
                 launchSpeed, targetSpeed, life).noEscapeZone();
         }
-        return new ChartData(ChartKind.NEZ_VS_SPEED.label(),
-            ChartKind.NEZ_VS_SPEED.xLabel(), ChartKind.NEZ_VS_SPEED.yLabel(),
-            xs, ys, "target " + Math.round(targetSpeed) + " m/s at "
-                + Math.round(worldY) + " m");
+        return new ChartData(ChartKind.NEZ_VS_SPEED.titleText(),
+            ChartKind.NEZ_VS_SPEED.xLabelText(), ChartKind.NEZ_VS_SPEED.yLabelText(),
+            xs, ys, SyncedText.of("amrac.chart.note.target",
+                Math.round(targetSpeed), Math.round(worldY)));
     }
 
     private static double[] trim(double[] values, int length) {

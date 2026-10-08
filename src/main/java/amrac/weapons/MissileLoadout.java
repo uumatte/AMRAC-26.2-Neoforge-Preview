@@ -148,10 +148,38 @@ public final class MissileLoadout {
     }
 
     public static int stationToLoad(String[] slots, double[] distances) {
+        return stationToLoad(slots, distances, null);
+    }
+
+    // Nearest empty station on the lighter wing (sign of lateral); nearest
+    // alone hung 4 clicked rounds 3/1 on six pylons and 4/0 on eight.
+    public static int stationToLoad(String[] slots, double[] distances,
+                                    double[] lateral) {
+        int heavy = 0;
+        if (lateral != null) {
+            int balance = 0;
+            for (int i = 0; i < slots.length && i < lateral.length; i++) {
+                if (slots[i] != null) {
+                    balance += side(lateral[i]);
+                }
+            }
+            heavy = Integer.signum(balance);
+        }
+        int best = nearestEmpty(slots, distances, lateral, heavy);
+        return best < 0 && heavy != 0
+            ? nearestEmpty(slots, distances, null, 0) : best;
+    }
+
+    private static int nearestEmpty(String[] slots, double[] distances,
+                                    double[] lateral, int heavy) {
         int best = -1;
         double bestDistance = Double.MAX_VALUE;
         for (int i = 0; i < slots.length && i < distances.length; i++) {
             if (slots[i] != null || !Double.isFinite(distances[i])) {
+                continue;
+            }
+            if (heavy != 0 && lateral != null && i < lateral.length
+                && side(lateral[i]) == heavy) {
                 continue;
             }
             if (distances[i] < bestDistance) {
@@ -160,6 +188,10 @@ public final class MissileLoadout {
             }
         }
         return best;
+    }
+
+    private static int side(double lateral) {
+        return Double.isFinite(lateral) ? (int) Math.signum(lateral) : 0;
     }
 
     public static List<String> typesAboard(String[] slots) {

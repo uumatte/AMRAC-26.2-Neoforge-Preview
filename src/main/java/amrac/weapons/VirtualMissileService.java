@@ -192,38 +192,39 @@ public final class VirtualMissileService {
                             @Nullable Vec3 targetPosition,
                             @Nullable Vec3 targetVelocity) {
         double[] axis = {state.axis.x, state.axis.y, state.axis.z};
-        double speed = state.velocity.length();
 
-        if (targetPosition != null) {
-            double[] toTarget = {
-                targetPosition.x - state.position.x,
-                targetPosition.y - state.position.y,
-                targetPosition.z - state.position.z};
-            double[] desired = new double[3];
-            Vec3 lead = targetVelocity == null ? Vec3.ZERO : targetVelocity;
-            if (MissilePolicy.steeringDirection(state.profile, toTarget,
-                new double[] {lead.x, lead.y, lead.z}, speed,
-                state.position.y, desired)) {
-                double[] turned = new double[3];
-                if (MissilePolicy.turnToward(axis, desired,
-                    MissilePolicy.maxTurnRadians(state.profile, speed,
-                        state.position.y, state.age), turned)) {
-                    axis = turned;
-                }
-            }
-            state.guidanceLost = false;
-        } else {
-            state.guidanceLost = true;
+        double[] steeringTarget = targetPosition == null ? null : new double[] {
+            targetPosition.x - state.position.x, targetPosition.y - state.position.y,
+            targetPosition.z - state.position.z};
+        double[] motion = targetVelocity == null ? null : new double[] {
+            targetVelocity.x, targetVelocity.y, targetVelocity.z};
+        double[] turned = new double[3];
+        if (MissilePolicy.advanceAxis(state.profile,
+            new double[] {state.velocity.x, state.velocity.y, state.velocity.z},
+            axis, steeringTarget, motion, state.position.y, state.age,
+            state.angularVelocity, turned)) {
+            axis = turned;
         }
+        state.guidanceLost = targetPosition == null;
         state.axis = new Vec3(axis[0], axis[1], axis[2]);
 
         Vec3 velocity = state.velocity;
+        // Thrust, drag and gravity, through the one step the entity also calls.
+        // Neither side does this arithmetic itself, which is the only
+        // arrangement under which a round cannot fly differently depending on
+        // whether anybody is looking at it.
         double[] advanced = new double[3];
         if (MissilePolicy.advanceAxial(state.profile, state.age, state.position.y,
             new double[] {velocity.x, velocity.y, velocity.z}, axis, advanced)) {
             velocity = new Vec3(advanced[0], advanced[1], advanced[2]);
         }
         {
+            // From the first tick: there is no separation phase, and the
+            // launch cap rides in on state.age through the turn budget.
+            // The same PN demand the entity makes, using relative target motion
+            // and the post-thrust/gravity missile velocity. It goes through the
+            // limiter with fin alignment so there is still only one G budget
+            // and one induced-drag charge for the tick.
             double[] command = null;
             if (targetPosition != null) {
                 double[] toTarget = {
@@ -246,7 +247,7 @@ public final class VirtualMissileService {
 
             double[] aligned = new double[3];
             double[] load = {state.lastLoadG};
-            if (MissilePolicy.alignAndCharge(state.profile,
+            if (MissilePolicy.alignFlightVelocity(state.profile,
                 new double[] {velocity.x, velocity.y, velocity.z}, axis,
                 command, state.position.y, load, state.age, aligned)) {
                 velocity = new Vec3(aligned[0], aligned[1], aligned[2]);

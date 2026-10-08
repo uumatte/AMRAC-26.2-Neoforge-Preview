@@ -117,10 +117,12 @@ public final class PlaneClientControls {
         KeyMappingHelper.registerKeyMapping(PlaneKeyBindings.OPEN_CONTROLS);
         PlaneKeyBindings.load();
         SoundVolumes.load();
+        ModLanguage.load();
 
-        PlaneNetworking.setRotationSender((attitude, motion) ->
+        PlaneNetworking.setRotationSender((attitude, motion, clientTick) ->
             sendPayload(PlaneNetworking.ROTATION,
-                buf -> PlaneNetworking.writeRotation(buf, attitude, motion)));
+                buf -> PlaneNetworking.writeRotation(buf, attitude, motion,
+                    clientTick)));
         PlaneNetworking.setControlSender((throttle, pitch, yaw, roll, reverse) ->
             sendPayload(PlaneNetworking.CONTROL, buf ->
                 PlaneNetworking.writeControls(buf, throttle, pitch, yaw, roll,

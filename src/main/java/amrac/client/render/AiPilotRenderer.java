@@ -5,7 +5,6 @@ import net.minecraft.client.model.monster.skeleton.SkeletonModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import amrac.entities.ai.AiPilotEntity;
 import amrac.entities.ai.AiPilotIdleReason;
@@ -39,7 +38,7 @@ public final class AiPilotRenderer extends HumanoidMobRenderer<AiPilotEntity,
         state.wither = pilot.variant() == AiPilotVariant.WITHER_SKELETON;
         state.scale = state.wither ? 1.2F : 1.0F;
         AiPilotIdleReason reason = pilot.idleReason();
-        if (reason.shown()) state.nameTag = Component.literal(reason.label());
+        if (reason.shown()) state.nameTag = reason.displayName();
     }
 
     @Override

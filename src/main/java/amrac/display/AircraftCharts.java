@@ -41,10 +41,11 @@ public final class AircraftCharts {
                 : Math.toDegrees(atmosphere.gravity()
                     * Math.sqrt(load * load - 1.0D) / speed);
         }
-        return new ChartData(ChartKind.TURN_RATE_VS_SPEED.label(),
-            ChartKind.TURN_RATE_VS_SPEED.xLabel(),
-            ChartKind.TURN_RATE_VS_SPEED.yLabel(), xs, ys,
-            profile.id() + " at " + Math.round(worldY) + " m");
+        return new ChartData(ChartKind.TURN_RATE_VS_SPEED.titleText(),
+            ChartKind.TURN_RATE_VS_SPEED.xLabelText(),
+            ChartKind.TURN_RATE_VS_SPEED.yLabelText(), xs, ys,
+            SyncedText.of("amrac.chart.note.altitude", profile.id(),
+                Math.round(worldY)));
     }
 
     public static ChartData sepVsSpeed(AircraftPhysicsProfile profile,
@@ -67,9 +68,10 @@ public final class AircraftCharts {
             xs[i] = speed;
             ys[i] = speed * (thrust - drag) / weight;
         }
-        return new ChartData(ChartKind.SEP_VS_SPEED.label(),
-            ChartKind.SEP_VS_SPEED.xLabel(), ChartKind.SEP_VS_SPEED.yLabel(),
-            xs, ys, profile.id() + " at " + Math.round(worldY) + " m, burner");
+        return new ChartData(ChartKind.SEP_VS_SPEED.titleText(),
+            ChartKind.SEP_VS_SPEED.xLabelText(), ChartKind.SEP_VS_SPEED.yLabelText(),
+            xs, ys, SyncedText.of("amrac.chart.note.altitude_burner",
+                profile.id(), Math.round(worldY)));
     }
 
     public static ChartData maxSpeedVsAltitude(AircraftPhysicsProfile profile,
@@ -99,10 +101,10 @@ public final class AircraftCharts {
             xs[i] = worldY;
             ys[i] = best;
         }
-        return new ChartData(ChartKind.MAX_SPEED_VS_ALTITUDE.label(),
-            ChartKind.MAX_SPEED_VS_ALTITUDE.xLabel(),
-            ChartKind.MAX_SPEED_VS_ALTITUDE.yLabel(), xs, ys,
-            profile.id() + ", burner, level");
+        return new ChartData(ChartKind.MAX_SPEED_VS_ALTITUDE.titleText(),
+            ChartKind.MAX_SPEED_VS_ALTITUDE.xLabelText(),
+            ChartKind.MAX_SPEED_VS_ALTITUDE.yLabelText(), xs, ys,
+            SyncedText.of("amrac.chart.note.burner_level", profile.id()));
     }
 
     private static double levelDrag(AerodynamicsModel aero,

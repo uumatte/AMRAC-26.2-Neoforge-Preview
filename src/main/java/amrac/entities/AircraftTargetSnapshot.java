@@ -7,16 +7,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+// width and height are only read by the proximity fuse.
 public record AircraftTargetSnapshot(UUID id, Vec3 position, Vec3 velocity,
                                      float width, float height,
                                      AircraftRegistry.Presence presence,
                                      boolean afterburner) {
     public static AircraftTargetSnapshot of(PlaneEntity plane) {
         AABB box = plane.getBoundingBox();
+        // Fuse room for a pilot the server only hears in bursts.
+        float grow = (float) (2.0D * plane.clientPositionSlack());
         return new AircraftTargetSnapshot(plane.getUUID(),
             box.getCenter().add(plane.silentClientOffset()),
-            plane.getDeltaMovement(), (float) (box.maxX - box.minX),
-            (float) (box.maxY - box.minY), AircraftRegistry.Presence.LIVE,
+            plane.getDeltaMovement(), (float) (box.maxX - box.minX) + grow,
+            (float) (box.maxY - box.minY) + grow, AircraftRegistry.Presence.LIVE,
             plane.isAfterburnerLit());
     }
 

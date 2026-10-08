@@ -96,7 +96,7 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
         int tabWidth = (ConsoleLayout.WIDTH - 2 * ConsoleLayout.MARGIN
             - 2 * ConsoleLayout.TAB_GAP) / 3;
         for (ConsoleMode value : ConsoleMode.values()) {
-            addRenderableWidget(Button.builder(Component.literal(value.label()),
+            addRenderableWidget(Button.builder(Component.translatable(value.translationKey()),
                     button -> send(PlaneNetworking.ConsoleAction.SET_MODE,
                         value.getSerializedName(), "", 0.0D, 0.0D))
                 .bounds(tabX, y + ConsoleLayout.TABS_Y, tabWidth,
@@ -173,14 +173,15 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
 
     private void buildPlot(int x, int y, ChartKind chart) {
         chartButton = addRenderableWidget(Button.builder(
-                Component.literal(chart.label()), button -> cycleChart())
+                Component.translatable(chart.translationKey()), button -> cycleChart())
             .bounds(x + ConsoleLayout.CHART_BUTTON_X,
                 y + ConsoleLayout.CHART_BUTTON_Y,
                 ConsoleLayout.CHART_BUTTON_WIDTH, ConsoleLayout.BUTTON_HEIGHT)
             .build());
 
         addRenderableWidget(Button.builder(
-                Component.literal(axisPanelOpen ? "Data" : "Axis"),
+                Component.translatable(axisPanelOpen
+                    ? "amrac.gui.console.data" : "amrac.gui.console.axis"),
                 button -> {
                     axisPanelOpen = !axisPanelOpen;
                     rebuildWidgets();
@@ -192,16 +193,16 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
 
         if (axisPanelOpen) {
             xMinBox = axisBox(x, y, ConsoleLayout.AXIS_MIN_X,
-                ConsoleLayout.AXIS_X_ROW_Y, "x min", keptXMin,
+                ConsoleLayout.AXIS_X_ROW_Y, "amrac.gui.console.x_min", keptXMin,
                 text -> keptXMin = text);
             xMaxBox = axisBox(x, y, ConsoleLayout.AXIS_MAX_X,
-                ConsoleLayout.AXIS_X_ROW_Y, "x max", keptXMax,
+                ConsoleLayout.AXIS_X_ROW_Y, "amrac.gui.console.x_max", keptXMax,
                 text -> keptXMax = text);
             yMinBox = axisBox(x, y, ConsoleLayout.AXIS_MIN_X,
-                ConsoleLayout.AXIS_Y_ROW_Y, "y min", keptYMin,
+                ConsoleLayout.AXIS_Y_ROW_Y, "amrac.gui.console.y_min", keptYMin,
                 text -> keptYMin = text);
             yMaxBox = axisBox(x, y, ConsoleLayout.AXIS_MAX_X,
-                ConsoleLayout.AXIS_Y_ROW_Y, "y max", keptYMax,
+                ConsoleLayout.AXIS_Y_ROW_Y, "amrac.gui.console.y_max", keptYMax,
                 text -> keptYMax = text);
             altitudeBox = null;
             targetSpeedBox = null;
@@ -320,7 +321,7 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
         }
         pendingChart = offered[(at + 1) % offered.length];
         if (chartButton != null) {
-            chartButton.setMessage(Component.literal(pendingChart.label()));
+            chartButton.setMessage(Component.translatable(pendingChart.translationKey()));
         }
     }
 
@@ -390,8 +391,8 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
                             java.util.function.Consumer<String> keep) {
         EditBox box = new EditBox(font, x + boxX, y + boxY,
             ConsoleLayout.AXIS_BOX_WIDTH, ConsoleLayout.BOX_HEIGHT,
-            Component.literal(hint));
-        box.setHint(Component.literal(hint));
+            Component.translatable(hint));
+        box.setHint(Component.translatable(hint));
         box.setValue(kept);
         box.setResponder(keep);
         addRenderableWidget(box);
@@ -460,21 +461,23 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
                                  int mouseY) {
         ConsoleBlockEntity desk = desk();
 
-        graphics.text(font, Component.translatable("amrac.gui.console.title", mode().label()),
+        graphics.text(font, Component.translatable("amrac.gui.console.title",
+                Component.translatable(mode().translationKey())),
             ConsoleLayout.MARGIN, ConsoleLayout.TITLE_Y, TEXT);
 
-        String screen = desk == null || desk.screenPos() == null
-            ? "No screen connected"
-            : "Screen " + desk.screenPos().getX() + " "
-                + desk.screenPos().getY() + " " + desk.screenPos().getZ();
-        graphics.text(font, Component.literal(screen),
+        Component screen = desk == null || desk.screenPos() == null
+            ? Component.translatable("amrac.console.status.no_screen")
+            : Component.translatable("amrac.gui.console.screen_at",
+                desk.screenPos().getX(), desk.screenPos().getY(),
+                desk.screenPos().getZ());
+        graphics.text(font, screen,
             ConsoleLayout.SCREEN_TEXT_X, ConsoleLayout.SCREEN_TEXT_Y,
             desk == null || desk.screenPos() == null ? WARN : LIVE);
 
-        String loaded = menu.slots.get(0).hasItem()
-            ? menu.slots.get(0).getItem().getHoverName().getString()
-            : "Slot empty";
-        graphics.text(font, Component.literal(loaded),
+        Component loaded = menu.slots.get(0).hasItem()
+            ? menu.slots.get(0).getItem().getHoverName()
+            : Component.translatable("amrac.gui.console.slot_empty");
+        graphics.text(font, loaded,
             ConsoleLayout.SCREEN_TEXT_X, ConsoleLayout.DOCUMENT_TEXT_Y,
             menu.slots.get(0).hasItem() ? TEXT : DIM);
 
@@ -497,9 +500,9 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
                         ConsoleLayout.ALTITUDE_LABEL_Y, DIM);
                 }
                 if (kind.takesTarget() || kind.takesLaunchSpeed()) {
-                    graphics.text(font, Component.literal(
-                            kind.takesLaunchSpeed() ? "Launch m/s"
-                                : "Target m/s"),
+                    graphics.text(font, Component.translatable(
+                            kind.takesLaunchSpeed() ? "amrac.gui.console.launch_speed"
+                                : "amrac.gui.console.target_speed"),
                         ConsoleLayout.TARGET_LABEL_X,
                         ConsoleLayout.TARGET_LABEL_Y, DIM);
                 }
@@ -507,7 +510,7 @@ public class ConsoleScreen extends AbstractContainerScreen<ConsoleMenu> {
         }
 
         if (desk != null && !desk.status().isEmpty()) {
-            graphics.text(font, Component.literal(desk.status()),
+            graphics.text(font, amrac.display.SyncedText.component(desk.status()),
                 ConsoleLayout.STATUS_X, ConsoleLayout.STATUS_Y, TEXT);
         }
     }

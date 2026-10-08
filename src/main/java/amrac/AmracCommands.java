@@ -274,21 +274,21 @@ public final class AmracCommands {
         }
 
         int launched = started;
-        StringBuilder message = new StringBuilder("Started mission for ")
-            .append(launched).append(" AI pilot(s)");
+        net.minecraft.network.chat.MutableComponent message = Component.translatable(
+            "amrac.command.mission.started", launched);
         if (airborne > 0) {
-            message.append("; ").append(airborne).append(" already airborne");
+            message.append(Component.translatable("amrac.command.mission.airborne",
+                airborne));
         }
         if (pruned > 0) {
-            message.append("; forgot ").append(pruned)
-                .append(" pilot(s) that no longer exist");
+            message.append(Component.translatable("amrac.command.mission.pruned",
+                pruned));
         }
         for (Map.Entry<AiPilotIdleReason, Integer> reason : refused.entrySet()) {
-            message.append("; ").append(reason.getValue()).append(" idle: ")
-                .append(reason.getKey().label());
+            message.append(Component.translatable("amrac.command.mission.idle",
+                reason.getValue(), reason.getKey().displayName()));
         }
-        String text = message.toString();
-        source.sendSuccess(() -> Component.literal(text), true);
+        source.sendSuccess(() -> message, true);
         return launched;
     }
 
@@ -337,26 +337,33 @@ public final class AmracCommands {
         records.sort(java.util.Comparator.comparingDouble(
             record -> record.position.distanceToSqr(from)));
         if (records.isEmpty()) {
-            source.sendSuccess(() -> Component.literal(
-                "No aircraft on this level"), false);
+            source.sendSuccess(() -> Component.translatable(
+                "amrac.command.aircraft.none"), false);
             return 0;
         }
         for (var record : records) {
             var pilot = amrac.entities.ai.AiPilotService
                 .flying(record.id);
-            String line = String.format(java.util.Locale.ROOT,
-                "%s  %s  xz %.0f %.0f  alt %.0f  %.0f b/s  range %.0f  %s%s",
+            Component line = Component.translatable("amrac.command.aircraft.line",
                 record.id.toString().substring(0, 8),
-                record.presence,
-                record.position.x, record.position.z, record.position.y,
-                record.velocity.length() * 20.0D,
-                Math.sqrt(record.position.distanceToSqr(from)),
-                pilot == null ? (record.crewed ? "crewed" : "empty")
-                    : pilot.rank().label(),
+                String.valueOf(record.presence),
+                whole(record.position.x), whole(record.position.z),
+                whole(record.position.y),
+                whole(record.velocity.length() * 20.0D),
+                whole(Math.sqrt(record.position.distanceToSqr(from))),
+                pilot == null
+                    ? Component.translatable(record.crewed
+                        ? "amrac.command.aircraft.crewed"
+                        : "amrac.command.aircraft.empty")
+                    : Component.translatable(pilot.rank().translationKey()),
                 record.team.isBlank() ? "" : " [" + record.team + "]");
-            source.sendSuccess(() -> Component.literal(line), false);
+            source.sendSuccess(() -> line, false);
         }
         return records.size();
+    }
+
+    private static String whole(double value) {
+        return String.format(java.util.Locale.ROOT, "%.0f", value);
     }
 
     private static int summon(CommandContext<CommandSourceStack> context,

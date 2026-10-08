@@ -47,6 +47,11 @@ public enum AiPilotRank {
         return label;
     }
 
+    // label() also prefixes callsigns, so screens show this key instead of translating it.
+    public String translationKey() {
+        return "amrac.ai_rank." + name().toLowerCase(java.util.Locale.ROOT);
+    }
+
     public double cruiseAltitude() {
         return AiPilotSettings.current().rank(this).cruiseAltitude();
     }

@@ -38,6 +38,8 @@ public class PlaneControlsScreen extends Screen {
     private Button resetAllButton;
     @Nullable
     private ControlsList.BindingEntry awaitingKey;
+    // Set by the language row; rebuilding inside its own click would pull the list out from under it.
+    private boolean rebuildPending;
 
     public PlaneControlsScreen(@Nullable Screen parent) {
         super(Component.translatable("amrac.controls.title"));
@@ -67,6 +69,23 @@ public class PlaneControlsScreen extends Screen {
         awaitingKey = null;
         clearWidgets();
         init();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (rebuildPending) {
+            rebuildPending = false;
+            rebuild();
+        }
+    }
+
+    private static Component languageName() {
+        return switch (amrac.client.ModLanguage.choice()) {
+            case FOLLOW_GAME -> Component.translatable("amrac.controls.language.follow");
+            case ENGLISH -> Component.literal("English");
+            case CHINESE -> Component.literal("简体中文");
+        };
     }
 
     private void refreshResetAll() {
@@ -131,6 +150,20 @@ public class PlaneControlsScreen extends Screen {
         }
 
         private void build() {
+            // Top row, so a player stuck in a language they cannot read finds it.
+            addEntry(new CycleRow("amrac.controls.language",
+                PlaneControlsScreen::languageName,
+                () -> {
+                    amrac.client.ModLanguage.set(amrac.client.ModLanguage.choice().next());
+                    rebuildPending = true;
+                },
+                amrac.client.ModLanguage::isDefault,
+                () -> {
+                    amrac.client.ModLanguage.set(
+                        amrac.client.ModLanguage.Choice.FOLLOW_GAME);
+                    rebuildPending = true;
+                }));
+
             String section = null;
             for (PlaneKeyBindings.Entry entry : PlaneKeyBindings.entries()) {
                 if (!entry.section().equals(section)) {

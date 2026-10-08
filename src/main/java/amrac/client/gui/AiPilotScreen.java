@@ -86,7 +86,7 @@ public final class AiPilotScreen extends AbstractContainerScreen<AiPilotMenu> {
                 continue;
             }
             AiPilotRank rank = ranks.get(index);
-            button.setMessage(Component.literal(rank.label()));
+            button.setMessage(Component.translatable(rank.translationKey()));
             button.active = menu.rank() != rank;
         }
         missionToggle.setMessage(Component.translatable(menu.missionActive()
@@ -121,8 +121,9 @@ public final class AiPilotScreen extends AbstractContainerScreen<AiPilotMenu> {
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX,
                                  int mouseY) {
         AiPilotEntity pilot = resolvePilot();
-        graphics.text(font, Component.literal(
-                pilot == null ? "AI Pilot" : pilot.callsign()),
+        graphics.text(font, pilot == null
+                ? Component.translatable("amrac.gui.ai_pilot.default_title")
+                : Component.literal(pilot.callsign()),
             titleLabelX, titleLabelY, 0xFFFFFFFF);
         Component team = pilot == null
             ? Component.translatable("amrac.gui.ai_pilot.team_unavailable")

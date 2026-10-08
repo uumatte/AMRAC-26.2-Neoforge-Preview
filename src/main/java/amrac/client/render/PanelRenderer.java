@@ -372,7 +372,7 @@ public final class PanelRenderer
         poseStack.translate(x, y, Z_TEXT);
         poseStack.scale(0.34F, 0.34F, 0.34F);
         collector.submitText(poseStack, 0.0F, 0.0F,
-            Component.literal(message).getVisualOrderText(), false,
+            amrac.display.SyncedText.component(message).getVisualOrderText(), false,
             Font.DisplayMode.POLYGON_OFFSET, light, colour, 0, 0);
         poseStack.popPose();
     }

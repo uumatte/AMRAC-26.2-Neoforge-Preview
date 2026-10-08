@@ -435,6 +435,119 @@ public final class MissilePolicy {
             profile.maxTurnRate);
     }
 
+    public static boolean usesInertia(MissileProfile profile) {
+        var model = flightModel(profile);
+        return model != null && model.profile().inertia().enabled();
+    }
+
+    /**
+     * Shared body-axis step. The PN demand and intercept heading request a turn;
+     * neither can bypass the body's angular response. Null target means damp
+     * the existing angular motion, not stop it in one tick.
+     *
+     * @param angularVelocity in/out world-space radians per second (three components)
+     */
+    public static boolean advanceAxis(MissileProfile profile, double[] velocity,
+                                      double[] axis, double[] toTarget,
+                                      double[] targetVelocity, double worldY, int age,
+                                      double[] angularVelocity, double[] out) {
+        if (velocity == null || axis == null || angularVelocity == null || out == null
+            || !finite(velocity) || !finite(axis) || angularVelocity.length != 3
+            || out.length != 3 || dot(axis, axis) < 1.0E-18D
+            || !Double.isFinite(worldY)) {
+            return false;
+        }
+        double speed = Math.sqrt(dot(velocity, velocity));
+        double length = Math.sqrt(dot(axis, axis));
+        double[] current = {axis[0] / length, axis[1] / length, axis[2] / length};
+        double[] aim = new double[3];
+        double[] motion = targetVelocity == null ? new double[3] : targetVelocity;
+        boolean guiding = toTarget != null && steeringDirection(profile,
+            toTarget, motion, speed, worldY, aim);
+        double budget = maxTurnRadians(profile, speed, worldY, age);
+        var model = flightModel(profile);
+        if (model == null || !model.profile().inertia().enabled()) {
+            java.util.Arrays.fill(angularVelocity, 0.0D);
+            if (guiding) {
+                return turnToward(current, aim, budget, out);
+            }
+            System.arraycopy(current, 0, out, 0, 3);
+            return true;
+        }
+
+        double[] demanded = null;
+        if (guiding) {
+            demanded = current.clone();
+            double[] command = new double[3];
+            double[] relative = {motion[0] - velocity[0], motion[1] - velocity[1],
+                motion[2] - velocity[2]};
+            if (speed > 1.0E-6D && withinGimbal(profile, current, toTarget)
+                && guidance(profile, toTarget, relative, speed, worldY, command)) {
+                double[] pnDirection = {current[0] + command[0] / speed,
+                    current[1] + command[1] / speed, current[2] + command[2] / speed};
+                double[] afterPn = new double[3];
+                if (turnToward(current, pnDirection, budget, afterPn)) {
+                    budget = Math.max(0.0D, budget - angleBetween(current, afterPn));
+                    demanded = afterPn;
+                }
+            }
+            double[] afterAim = new double[3];
+            if (budget > 1.0E-9D && turnToward(demanded, aim, budget, afterAim)) {
+                demanded = afterAim;
+            }
+        }
+
+        var atmosphere = amrac.physics.aircraft.FlightModelRegistry.instance().atmosphere();
+        double airspeed = speed * TICKS_PER_SECOND;
+        // Presets use full-size pressure so half-speed game sets retain their response time.
+        double fullSizeSpeed = airspeed / atmosphere.speedScale();
+        double pressure = 0.5D * atmosphere.density(worldY) * fullSizeSpeed * fullSizeSpeed;
+        var inertia = model.profile().inertia();
+        double pressureFactor = pressure / inertia.referenceDynamicPressure()
+            * model.profile().controlAuthority(atmosphere.mach(airspeed, worldY));
+        var result = amrac.physics.missile.MissileAngularDynamics.step(inertia,
+            vector(current), demanded == null ? null : vector(demanded),
+            vector(angularVelocity), pressureFactor, 1.0D / TICKS_PER_SECOND);
+        out[0] = result.axis().x;
+        out[1] = result.axis().y;
+        out[2] = result.axis().z;
+        angularVelocity[0] = result.angularVelocity().x;
+        angularVelocity[1] = result.angularVelocity().y;
+        angularVelocity[2] = result.angularVelocity().z;
+        return finite(out);
+    }
+
+    private static amrac.physics.aircraft.Vec3d vector(double[] values) {
+        return new amrac.physics.aircraft.Vec3d(values[0], values[1], values[2]);
+    }
+
+    /** Live flight: PN has already acted through advanceAxis when inertia is enabled. */
+    public static boolean alignFlightVelocity(MissileProfile profile,
+                                              double[] velocity, double[] axis,
+                                              double[] lateralCommand, double worldY,
+                                              double[] load, int age, double[] out) {
+        return alignAndCharge(profile, velocity, axis,
+            usesInertia(profile) ? null : lateralCommand, worldY, load, age, out);
+    }
+
+    /**
+     * One tick of axial physics: thrust, drag and gravity.
+     *
+     * <p>The one place either flight path integrates a missile's speed. Both
+     * the entity and the virtual segment call it and neither does the
+     * arithmetic itself, which is what stops a round flying one way in the open
+     * and another way out of sight -- the failure that matters most here,
+     * because nobody is watching when it happens.</p>
+     *
+     * <p>Rounds on the original model get exactly what they always got: a
+     * constant boost acceleration along the nose while the motor is lit, a
+     * fixed fraction of speed lost to coast drag when it is not, and gravity.
+     * The AMRAAM gets its thrust curve, its drag polar against Mach and its
+     * mass, in newtons, in the air it is actually in.</p>
+     *
+     * @param worldY the missile's height, which only the new model reads
+     * @return true when a new velocity was written to {@code out}
+     */
     public static boolean advanceAxial(MissileProfile profile, int age,
                                        double worldY, double[] velocity,
                                        double[] axis, double[] out) {

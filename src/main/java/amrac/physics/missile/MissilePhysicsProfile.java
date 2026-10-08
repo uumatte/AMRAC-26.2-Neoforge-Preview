@@ -17,6 +17,7 @@ public final class MissilePhysicsProfile {
     private final double maxG;
     private final double maxAoA;
     private final double maxGRate;
+    private final MissileInertiaProfile inertia;
     private final double referenceAltitude;
     private final double referenceLaunchSpeed;
     private final double referenceTargetSpeed;
@@ -76,6 +77,7 @@ public final class MissilePhysicsProfile {
         this.maxG = builder.maxG;
         this.maxAoA = builder.maxAoA;
         this.maxGRate = builder.maxGRate;
+        this.inertia = builder.inertia;
         this.referenceAltitude = builder.referenceAltitude;
         this.referenceLaunchSpeed = builder.referenceLaunchSpeed;
         this.referenceTargetSpeed = builder.referenceTargetSpeed;
@@ -124,6 +126,8 @@ public final class MissilePhysicsProfile {
         builder.maxAoA = positive(Json.number(limitSource, "maxAoA", builder.maxAoA),
             builder.maxAoA);
         builder.maxGRate = Json.number(limitSource, "maxGRate", builder.maxGRate);
+        builder.inertia = MissileInertiaProfile.fromJson(Json.object(root, "inertia"),
+            builder.inertia);
 
         Map<String, Object> launch = Json.object(root, "launch");
         if (launch != null) {
@@ -456,6 +460,20 @@ public final class MissilePhysicsProfile {
         return maxGRate;
     }
 
+    public MissileInertiaProfile inertia() {
+        return inertia;
+    }
+
+    /**
+     * The shot the published figures are quoted at.
+     *
+     * <p>Top speed and available load are not constants of a missile -- both
+     * depend on the air it is in and how fast it is already going. Quoting them
+     * therefore needs a stated condition, and this is it: the altitude, the
+     * launch speed and the speed of the target being chased. Change these and
+     * the numbers on the item change with them, because they are measured
+     * rather than written down.</p>
+     */
     public double referenceAltitude() {
         return referenceAltitude;
     }
@@ -569,6 +587,7 @@ public final class MissilePhysicsProfile {
         builder.maxG = maxG;
         builder.maxAoA = maxAoA;
         builder.maxGRate = maxGRate;
+        builder.inertia = inertia;
         builder.referenceAltitude = referenceAltitude;
         builder.referenceLaunchSpeed = referenceLaunchSpeed;
         builder.referenceTargetSpeed = referenceTargetSpeed;
@@ -681,6 +700,7 @@ public final class MissilePhysicsProfile {
         private double maxG = 30.0D;
         private double maxAoA = 25.0D;
         private double maxGRate = Double.NaN;
+        private MissileInertiaProfile inertia = MissileInertiaProfile.DISABLED;
         private double referenceAltitude = 10000.0D;
         private double referenceLaunchSpeed = 680.0D;
         private double referenceTargetSpeed = 680.0D;

@@ -70,9 +70,10 @@ public final class ConsoleService {
     private static void connect(ServerLevel level, ConsoleBlockEntity desk) {
         BlockPos screen = desk.findNearestScreen(level);
         desk.connect(screen);
-        desk.setStatus(screen == null ? "No screen within range"
-            : "Connected to " + screen.getX() + " " + screen.getY()
-                + " " + screen.getZ());
+        desk.setStatus(screen == null
+            ? SyncedText.of("amrac.message.console_no_screen")
+            : SyncedText.of("amrac.message.console_connected",
+                screen.getX(), screen.getY(), screen.getZ()));
     }
 
     private static void enter(ConsoleBlockEntity desk, String name) {
@@ -80,13 +81,13 @@ public final class ConsoleService {
         String id = documentId(desk);
         if (id == null) {
             desk.setParameter("", "", "");
-            desk.setStatus("Nothing in the slot for this mode");
+            desk.setStatus(SyncedText.of("amrac.console.status.slot_empty"));
             return;
         }
         String current = ConsoleActions.readParameter(desk.mode(), id, name);
         if (current == null) {
             desk.setParameter(name, "", "");
-            desk.setStatus("No parameter called " + name);
+            desk.setStatus(SyncedText.of("amrac.console.status.no_parameter", name));
             return;
         }
         desk.setParameter(name,
@@ -97,17 +98,17 @@ public final class ConsoleService {
     private static void apply(ConsoleBlockEntity desk, String name, String value) {
         String id = documentId(desk);
         if (id == null) {
-            desk.setStatus("Nothing in the slot for this mode");
+            desk.setStatus(SyncedText.of("amrac.console.status.slot_empty"));
             return;
         }
         if (!ConsoleActions.applyParameter(desk.mode(), id, name, value)) {
-            desk.setStatus("Could not write " + name);
+            desk.setStatus(SyncedText.of("amrac.console.status.write_failed", name));
             return;
         }
         String current = ConsoleActions.readParameter(desk.mode(), id, name);
         desk.setParameter(name,
             ConsoleActions.parameterPath(desk.mode(), id, name), current);
-        desk.setStatus("Applied " + name);
+        desk.setStatus(SyncedText.of("amrac.console.status.applied", name));
     }
 
     private static void draw(ServerLevel level, ConsoleBlockEntity desk,
@@ -120,7 +121,7 @@ public final class ConsoleService {
         BlockPos screenPos = desk.screenPos();
         if (screenPos == null
                 || !(level.getBlockEntity(screenPos) instanceof ScreenBlockEntity panel)) {
-            desk.setStatus("No screen connected");
+            desk.setStatus(SyncedText.of("amrac.console.status.no_screen"));
             return;
         }
 
@@ -131,7 +132,7 @@ public final class ConsoleService {
 
         String id = documentId(desk);
         if (id == null) {
-            desk.setStatus("Nothing in the slot for this mode");
+            desk.setStatus(SyncedText.of("amrac.console.status.slot_empty"));
             return;
         }
         AxisBounds pinned = bounds == null ? AxisBounds.AUTO : bounds;
@@ -139,12 +140,13 @@ public final class ConsoleService {
             targetSpeed).pinned(pinned.xMin(), pinned.xMax(),
                 pinned.yMin(), pinned.yMax());
         if (data.isEmpty()) {
-            desk.setStatus("Nothing to plot");
+            desk.setStatus(SyncedText.of("amrac.console.status.nothing_to_plot"));
             return;
         }
         panel.content().showChart(data);
         panel.contentChanged();
-        desk.setStatus("Drew " + kind.label());
+        desk.setStatus(SyncedText.of("amrac.console.status.drew",
+            SyncedText.key(kind.translationKey())));
     }
 
     private static void drawMap(ServerLevel level, ConsoleBlockEntity desk,
@@ -152,16 +154,17 @@ public final class ConsoleService {
         ItemStack stack = desk.slot().getItem(0);
         if (stack.is(amrac.AmracItems.GPS)) {
             GpsMirror.refresh(level, desk, panel);
-            desk.setStatus("Mirroring the GPS");
+            desk.setStatus(SyncedText.of("amrac.console.status.mirroring_gps"));
             return;
         }
         double[] centre = ConsoleActions.mapCentre(level, stack, desk.getBlockPos());
         double span = ConsoleActions.mapSpan();
         panel.content().showMap(
             ConsoleActions.map(level, centre[0], centre[1], span),
-            centre[0], centre[1], span, "Map");
+            centre[0], centre[1], span,
+            SyncedText.of(ConsoleMode.MAP.translationKey()));
         panel.contentChanged();
-        desk.setStatus("Drew the map");
+        desk.setStatus(SyncedText.of("amrac.console.status.drew_map"));
     }
 
     private static String documentId(ConsoleBlockEntity desk) {

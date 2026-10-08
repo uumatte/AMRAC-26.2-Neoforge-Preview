@@ -296,8 +296,9 @@ public final class GpsScreen extends Screen {
         graphics.horizontalLine(centreX - radius, centreX + radius, centreY, AXIS);
         graphics.verticalLine(centreX, centreY - radius, centreY + radius, AXIS);
 
-        String top = mode == Mode.TACTICAL ? "N" : "NOSE";
-        graphics.centeredText(font, Component.literal(top),
+        Component top = mode == Mode.TACTICAL ? Component.literal("N")
+            : Component.translatable("amrac.gui.gps.nose");
+        graphics.centeredText(font, top,
             centreX, centreY - radius - 20, LABEL);
         if (mode == Mode.TACTICAL) {
             graphics.centeredText(font, Component.literal("S"),
@@ -401,11 +402,10 @@ public final class GpsScreen extends Screen {
                         ? contact.name() : contact.name() + " ?"),
                     left + 8, y, colour);
                 y += 10;
-                graphics.text(font, Component.literal(String.format(Locale.ROOT,
-                        "%.0f %.0f  alt %.0f  %.0f b/s%s",
-                        contact.x(), contact.z(), contact.y(),
-                        contact.speedBlocksPerSecond(),
-                        contact.live() ? "" : "  last seen")),
+                graphics.text(font, Component.translatable(contact.live()
+                        ? "amrac.gui.gps.contact" : "amrac.gui.gps.contact_stale",
+                        whole(contact.x()), whole(contact.z()), whole(contact.y()),
+                        whole(contact.speedBlocksPerSecond())),
                     left + 8, y, DIM);
                 y += 12;
             }
@@ -492,5 +492,9 @@ public final class GpsScreen extends Screen {
             int y = centreY + (int) Math.round(Math.sin(angle) * r);
             graphics.fill(x, y, x + 1, y + 1, colour);
         }
+    }
+
+    private static String whole(double value) {
+        return String.format(Locale.ROOT, "%.0f", value);
     }
 }

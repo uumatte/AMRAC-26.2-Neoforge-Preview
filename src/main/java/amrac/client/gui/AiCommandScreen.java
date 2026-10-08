@@ -115,7 +115,7 @@ public final class AiCommandScreen extends Screen {
         controls.clear();
 
         control("rank", CycleButton.builder(
-                (AiPilotRank value) -> Component.literal(value.label()), rank)
+                (AiPilotRank value) -> Component.translatable(value.translationKey()), rank)
             .withValues(AiPilotRank.values()).displayOnlyValue()
             .create(left + FIELD_X, rowY(0), FIELD_WIDTH, 20,
                 Component.translatable("amrac.gui.ai_command.rank"),

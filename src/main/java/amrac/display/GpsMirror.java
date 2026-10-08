@@ -38,7 +38,7 @@ public final class GpsMirror {
             blips.add(new ScreenContent.Blip(kind,
                 contact.x(), contact.z(), contact.name()));
         }
-        panel.content().showGps("Tactical GPS", blips, centre.x, centre.z,
+        panel.content().showGps(SyncedText.of("amrac.gui.gps.title"), blips, centre.x, centre.z,
             GpsPolicy.RANGE * 2.0D);
         panel.contentChanged();
     }

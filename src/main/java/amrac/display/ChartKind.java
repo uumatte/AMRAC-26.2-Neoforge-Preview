@@ -52,6 +52,23 @@ public enum ChartKind {
         return yLabel;
     }
 
+    // label()/xLabel()/yLabel() stay English (tests read them); panels get the keys below.
+    public String translationKey() {
+        return "amrac.chart." + name;
+    }
+
+    public String titleText() {
+        return SyncedText.of(translationKey());
+    }
+
+    public String xLabelText() {
+        return SyncedText.of(translationKey() + ".x");
+    }
+
+    public String yLabelText() {
+        return SyncedText.of(translationKey() + ".y");
+    }
+
     public boolean takesAltitude() {
         return altitude;
     }
